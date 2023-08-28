@@ -153,6 +153,7 @@ class ProjectController extends Controller
     {
         $project = Project::onlyTrashed()->findOrFail($slug);
         Storage::delete($project->image);
+        $project->tags()->detach();
         $project->forceDelete();
 
         return redirect()->route('admin.projects.index');
