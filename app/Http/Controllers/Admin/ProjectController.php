@@ -89,7 +89,9 @@ class ProjectController extends Controller
         //
         $types = Type::all();
 
-        return view('admin.projects.edit', compact('project', 'types'));
+        $technologies = Technology::all();
+
+        return view('admin.projects.edit', compact('project', 'types', 'technologies'));
     }
 
     /**
@@ -102,6 +104,7 @@ class ProjectController extends Controller
             'title' => ['required', 'min:3', 'max:255', Rule::unique('projects')->ignore($project->id)],
             'image' => ['image'],
             'content' => ['required', 'min:10'],
+            'technologies' => ['exists:technologies,id'],
             'type_id' => ['required', 'exists:types,id'],
         ]);
 
@@ -114,6 +117,10 @@ class ProjectController extends Controller
         $data['slug'] = Str::of("$project->id " . $data['title'])->slug('-');
 
         $project->update($data);
+
+        if ($request->has('technologies')){
+            $project->technologies()->sync($request->technologies);
+        }
 
         return redirect()->route('admin.projects.show', compact('project'));
     }
