@@ -7,6 +7,14 @@
             <div class="card">
                 <h5 class="card-header"> ID: {{ $project->id }} ---- {{ $project->slug }} --- {{ $project->type ? $project->type->name : '' }}</h5>
 
+                @if ( count($project->technologies) > 0)
+                    <h6 class="card-header">
+                        @foreach ($project->technologies as $technology)
+                            {{ $technology->name }} --
+                        @endforeach
+                    </h6>
+                @endif
+
                 @if (str_starts_with($project->image, 'http' ))
                     <img src="{{ $project->image }}" alt="{{ $project->title }}">
                 @else

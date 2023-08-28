@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Type;
 use App\Models\Project;
+use App\Models\Technology;
 use Illuminate\Http\Request;
 
 use Illuminate\Support\Str;
@@ -30,7 +31,8 @@ class ProjectController extends Controller
     {
         //
         $types = Type::all();
-        return view('admin.projects.create', compact('types'));
+        $technologies = Technology::all();
+        return view('admin.projects.create', compact('types', 'technologies'));
     }
 
     /**
@@ -38,18 +40,22 @@ class ProjectController extends Controller
      */
     public function store(Request $request)
     {
+        $technologies = Technology::all()->pluck('id');
+
         $data = $request->validate([
             'title' => ['required', 'unique:projects','min:3', 'max:255'],
-            'image' => ['image'],
+            'image' => ['required', 'image'],
             'content' => ['required', 'min:10'],
+            'technologies' => ['exists:technologies,id'],
             'type_id' => ['required', 'exists:types,id'], 
+            
         ]);
+        
 
         if ($request->hasFile('image')){
             $img_path = Storage::put('uploads/projects', $request['image']);
             $data['image'] = $img_path;
         }
-        $data['image'] = $img_path;
 
         $data['slug'] = Str::of($data['title'])->slug('-');
 
@@ -58,6 +64,10 @@ class ProjectController extends Controller
         $newProject->slug = Str::of("$newProject->id " . $data['title'])->slug('-');
 
         $newProject->save();
+
+        if ($request->has('technologies')){
+            $newProject->technologies()->sync($request->technologies);
+        }
 
         return redirect()->route('admin.projects.show', $newProject);
     }

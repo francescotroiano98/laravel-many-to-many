@@ -21,7 +21,7 @@
                 @enderror
                 <div class="mb-5">
                     <label for="type_id" class="form-label">
-                        Title
+                        Type
                     </label>
                     <select class='form-select' name="type_id" id="type_id">
                         @foreach ($types as $type)
@@ -31,6 +31,26 @@
                         @endforeach
                     </select>
                 </div>
+
+                @error('technology_id')
+                    <div class="alert alert-danger">{{ $message }}</div>
+                @enderror
+                <div class="mb-5">
+                    <label for="technologies" class="form-label">
+                        Technologies
+                    </label>
+
+                    <div>
+                        @foreach ($technologies as $technology)
+                            <input type="checkbox" name="technologies[]" class="form-check-input" id="technologies" value="{{ $technology->id }}"
+                                @if( in_array($technology->id, old('technologies', []))) checked @endif>
+                            <label for="technologies" class="form-check-label me-3">
+                                {{ $technology->name }}
+                            </label>
+                        @endforeach
+                    </div>
+                </div>
+
 
                 @error('image')
                     <div class="alert alert-danger">{{ $message }}</div>
