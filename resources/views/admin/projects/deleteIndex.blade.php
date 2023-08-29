@@ -29,9 +29,9 @@
                                 {{ $project->slug }}
                             </td>
                             <td>                               
-                                <form class="d-inline-block" action="{{ route('admin.projects.restore', $project) }}" method="POST">
+                                <form class="d-inline-block" action="{{ route('admin.projects.restore', $project->id) }}" method="POST">
                                     @csrf
-                                    @method('DELETE')
+                                    @method('POST')
             
                                     <button type="submit" class="btn btn-sm btn-warning">
                                         Restore
