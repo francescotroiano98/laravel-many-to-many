@@ -139,7 +139,7 @@ class ProjectController extends Controller
         return view('admin.projects.deleteIndex', compact('projects'));
     }
 
-    public function restore($slug){
+    public function restore(string $slug){
 
         $project = Project::onlyTrashed()->findOrFail($slug);
         
